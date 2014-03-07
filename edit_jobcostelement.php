@@ -25,7 +25,7 @@ if ($fgmembersite->usertype() == 1)	{
 	$header_file='./layout/admin_header_ams.php';
 }
 
-$query_edit				=	"SELECT id,cost_elementid,cost_uom,cost_typeid FROM costtypeelement WHERE id = '$id'";			
+$query_edit				=	"SELECT id,cost_elementid,job_id FROM jobcostelement WHERE id = '$id'";			
 $res_edit				=	mysql_query($query_edit) or die(mysql_error());
 $row_edit				=	mysql_fetch_array($res_edit);
 
@@ -39,8 +39,7 @@ if(isset($_POST['formsaveval']) && $_POST[formsaveval] == 800) {
 		
 	$fgmembersite->DBLogin();
 	$cost_elementid			=	$_POST['cost_elementid'];
-	$cost_uom				=	$_POST['cost_uom'];
-	$cost_typeid			=	$_POST['cost_typeid'];
+	$job_id					=	$_POST['job_id'];
 		
 		//echo 'UPDATE jobs SET job_code="'.$job_code.'",job_type_id="'.$job_type_id.'",job_desc="'.$job_desc.'",updated_by="'.$user_id.'",updated_at=NOW() WHERE id = "'.$edit_id.'"';
 	
@@ -49,10 +48,10 @@ if(isset($_POST['formsaveval']) && $_POST[formsaveval] == 800) {
 	
 	$user_id		=	$_SESSION['user_id'];
 		
-	if(!mysql_query('UPDATE costtypeelement SET cost_elementid="'.$cost_elementid.'",cost_uom="'.$cost_uom.'",cost_typeid="'.$cost_typeid.'",updated_by="'.$user_id.'",updated_at=NOW() WHERE id = "'.$edit_id.'"')) {
+	if(!mysql_query('UPDATE jobcostelement SET cost_elementid="'.$cost_elementid.'",job_id="'.$job_id.'",updated_by="'.$user_id.'",updated_at=NOW() WHERE id = "'.$edit_id.'"')) {
 			die('Error: ' . mysql_error());
 		}
-		$fgmembersite->RedirectToURL("view_ctelement.php?success=update");
+		$fgmembersite->RedirectToURL("view_jobcostelement.php?success=update");
 		echo "&nbsp;";
 }
 ?>
@@ -168,8 +167,7 @@ $(document).ready(function() {
 	$("#part_save").on("click", function() {
 		//alert("232");
 		var cost_elementid		=	$("#cost_elementid").val();
-		var cost_uom			=	$("#cost_uom").val();
-		var cost_typeid			=	$("#cost_typeid").val();
+		var job_id				=	$("#job_id").val();
 
 		if(cost_elementid == '0') {
 			$('.myalignbuild').html('ERR : Select Cost Element');
@@ -180,22 +178,13 @@ $(document).ready(function() {
 			$("#cost_elementid").focus();
 			return false;
 		}		
-		if(cost_typeid == '0') {
-			$('.myalignbuild').html('ERR : Select Cost Type');
+		if(job_id == '0') {
+			$('.myalignbuild').html('ERR : Select Jobs');
 			$('#errormsgbuild').css('display','block');
 			setTimeout(function() {
 				$('#errormsgbuild').hide();
 			},5000);
-			$("#cost_typeid").focus();
-			return false;
-		}
-		if(cost_uom == '0') {
-			$('.myalignbuild').html('ERR : Select UOM');
-			$('#errormsgbuild').css('display','block');
-			setTimeout(function() {
-				$('#errormsgbuild').hide();
-			},5000);
-			$("#cost_uom").focus();
+			$("#job_id").focus();
 			return false;
 		}
 		
@@ -206,7 +195,7 @@ $(document).ready(function() {
 </script>
 <div id="mainareabuild">
 <div class="mcf"></div>
-<div align="center" class="headingsgr">COST ELEMENT</div>
+<div align="center" class="headingsgr">JOB-COST ELEMENTS</div>
 <div id="mytableformbuild" align="center">
 <form id='diesel_save' action="<?php echo $_SERVER['PHP_SELF'];?>" method='post' accept-charset='UTF-8' enctype="multipart/form-data">
 <div class="scroll_box">
@@ -216,7 +205,7 @@ $(document).ready(function() {
  <tr>
   <td>
 <fieldset align="left" class="alignment2">
-  <legend ><strong>Cost Element</strong></legend>
+  <legend ><strong>Job-Cost Elements</strong></legend>
 <table width="50%" align="left">
  <tr>
   <td>
@@ -243,27 +232,6 @@ $(document).ready(function() {
 	 ?>
    </td>
 	</tr>
-	
-    <tr height="30">
-     <td width="120" class="nowrapcls">UOM*</td>
-	 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-     <td><?php
-    	$fgmembersite->DBLogin();
-		$result_state=mysql_query("SELECT id,name FROM uom_ams");
-		echo '<select name="cost_uom" id="cost_uom" style="width:150px;" tabindex="3">';
-		echo '<option value="0">--Select--</option>';
-		while($row=mysql_fetch_array($result_state)) {
-			if($row['id'] == $row_edit[cost_uom]){
-				  $isSelected = ' selected="selected"'; // if the option submited in form is as same as this row we add the selected tag
-			 } else {
-				  $isSelected = ''; // else we remove any tag
-			 }
-			 echo "<option value='".$row['id']."'".$isSelected.">".$fgmembersite->upperstate($row['name'])."</option>";			
-		}
-		echo '</select>';
-	 ?>
-   </td>
-	</tr>
     
     </table>
    </td>
@@ -278,20 +246,20 @@ $(document).ready(function() {
    <table>     
    
    <tr height="30">
-     <td width="75" style="white-space: nowrap; ">Cost Type*</td>
+     <td width="75" style="white-space: nowrap; ">Jobs*</td>
 	 <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
      <td><?php
     	$fgmembersite->DBLogin();
-		$result_state=mysql_query("SELECT id,name FROM costtype");
-		echo '<select name="cost_typeid" id="cost_typeid" style="width:150px;" tabindex="3">';
+		$result_state=mysql_query("SELECT id,job_desc FROM jobs");
+		echo '<select name="job_id" id="job_id" style="width:150px;" tabindex="3">';
 		echo '<option value="0">--Select--</option>';
 		while($row=mysql_fetch_array($result_state)) {
-			if($row['id'] == $row_edit[cost_typeid]){
+			if($row['id'] == $row_edit[job_id]){
 				  $isSelected = ' selected="selected"'; // if the option submited in form is as same as this row we add the selected tag
 			 } else {
 				  $isSelected = ''; // else we remove any tag
 			 }
-			 echo "<option value='".$row['id']."'".$isSelected.">".$fgmembersite->upperstate($row['name'])."</option>";			
+			 echo "<option value='".$row['id']."'".$isSelected.">".ucfirst($row['job_desc'])."</option>";			
 		}
 		echo '</select>';
 	 ?>
@@ -310,10 +278,7 @@ $(document).ready(function() {
 </tr>
 </table>
 
-
-
 </div>
-
 
 </div>
 </div>
@@ -324,7 +289,7 @@ $(document).ready(function() {
 	  <input type="hidden" name="formsaveval" id="formsaveval" /> <!-- This will give the value when form is submitted, otherwise it will empty -->
       <input type="reset" name="reset" class="buttons" value="Clear" id="clear" />&nbsp;&nbsp;&nbsp;&nbsp;
       <input type="button" name="cancel" value="Cancel" class="buttons" onclick="window.location='ams_temp.php?id=1'"/>&nbsp;&nbsp;&nbsp;&nbsp;
-	  <input type="button" name="View" value="View" class="buttons" onclick="window.location='view_ctelement.php'"/></td>
+	  <input type="button" name="View" value="View" class="buttons" onclick="window.location='view_jobcostelement.php'"/></td>
 	 </td>
     </tr>
   </table>

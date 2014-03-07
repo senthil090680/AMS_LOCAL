@@ -6,6 +6,8 @@ ini_set("display_errors",true);
 error_reporting(E_ALL & ~E_NOTICE);
 
 extract($_REQUEST);
+
+echo "hedloe";
 /*echo "<pre>";
 print_r($_REQUEST);
 echo "</pre>";
@@ -172,25 +174,25 @@ $(document).live('ready',function() {
 	
 	$("#part_save").on("click", function() {
 		//alert("232");
-		var cost_element		=	$("#cost_elementid").val();
+		var cost_elementid		=	$("#cost_elementid").val();
 		var cost_uom			=	$("#cost_uom").val();
-		var cost_type			=	$("#cost_typeid").val();	
-		if(cost_element == '0') {
+		var cost_typeid			=	$("#cost_typeid").val();	
+		if(cost_elementid == '0') {
 			$('.myalignbuild').html('ERR : Select Cost Element');
 			$('#errormsgbuild').css('display','block');
 			setTimeout(function() {
 				$('#errormsgbuild').hide();
 			},5000);
-			$("#cost_element").focus();
+			$("#cost_elementid").focus();
 			return false;
 		}		
-		if(cost_type == '0') {
+		if(cost_typeid == '0') {
 			$('.myalignbuild').html('ERR : Select Cost Type');
 			$('#errormsgbuild').css('display','block');
 			setTimeout(function() {
 				$('#errormsgbuild').hide();
 			},5000);
-			$("#cost_type").focus();
+			$("#cost_typeid").focus();
 			return false;
 		}
 		if(cost_uom == '0') {
