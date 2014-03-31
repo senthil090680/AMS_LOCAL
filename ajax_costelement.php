@@ -3,8 +3,7 @@ require_once("./include/membersite_config.php");
 require_once ("./include/ajax_pagination.php");
 EXTRACT($_REQUEST);
 $fgmembersite->DBLogin();
-if(!$fgmembersite->CheckLogin())
-{
+if(!$fgmembersite->CheckLogin()) {
     $fgmembersite->RedirectToURL("index.php");
     exit;
 }
@@ -13,16 +12,11 @@ if(!$fgmembersite->CheckLogin())
 <?PHP
 require_once("./include/membersite_config.php");
 
-if(!$fgmembersite->CheckLogin())
-{
+if(!$fgmembersite->CheckLogin()) {
     $fgmembersite->RedirectToURL("index.php");
     exit;
 }
-
-?>
-<?php
-if($_REQUEST['searchname']!='')
-{
+if($_REQUEST['searchname']!='') {
 	$var = @$_REQUEST['searchname'] ;
 	$trimmed = trim($var);	
 	$qry="SELECT * FROM `costelement` where name like '%".$trimmed."%'";
@@ -84,8 +78,7 @@ $results_dsr = mysql_query($qry) or die(mysql_error());
 <div class="con2">
 			<table id="sort" class="tablesorter" width="100%" align="center">
 			<thead>
-			<tr>
-				
+			<tr>				
 				<?php //echo $sortorderby;
 				if($sortorder == 'ASC') {
 					$sortorderby = 'DESC';
@@ -94,11 +87,16 @@ $results_dsr = mysql_query($qry) or die(mysql_error());
 				} else {
 					$sortorderby = 'ASC';
 				}
-				$paramsval	=	$searchname."&".$sortorderby."&name"; ?>
+				$paramsval	=	$searchname."&".$sortorderby."&name";
+				$paramsval	=	$number_block + $num_percent;
+				$paramvalue	=	$yumop;
+				if($paramvalue != '') {					
+					$sortorderby	=	$tablesorter;
+					$orderbyvalue	=	"DESC";
+				}
+				?>
 				<th nowrap="nowrap" class="rounded" onClick="colviewajax('<?php echo $Page; ?>','<?php echo $paramsval; ?>');">Cost Element<img src="images/sort.png" width="13" height="13" /></th>
-				<th nowrap="nowrap" align="right">Edit</th>
-	
-			</tr>
+				<th nowrap="nowrap" align="right">Edit</th>	
 			</tr>
 			</thead>
 			<tbody>

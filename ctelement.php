@@ -6,8 +6,6 @@ ini_set("display_errors",true);
 error_reporting(E_ALL & ~E_NOTICE);
 
 extract($_REQUEST);
-
-echo "hedloe";
 /*echo "<pre>";
 print_r($_REQUEST);
 echo "</pre>";
